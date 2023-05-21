@@ -12,21 +12,15 @@ import {
 	getAuth,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
-	onAuthStateChanged,
 } from "firebase/auth";
 import app from "../firebase";
 import { useEffect, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 
 const auth = getAuth(app);
-const LoginScreen = () => {
+
+const SignupScreen = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [showPassword, setShowPassword] = useState(false);
-
-	const toggleShowPassword = () => {
-		setShowPassword(!showPassword);
-	};
 
 	const navigation = useNavigation();
 
@@ -40,6 +34,15 @@ const LoginScreen = () => {
 		return unsubscribe;
 	}, []);
 
+	const handleSignUp = () => {
+		createUserWithEmailAndPassword(auth, email, password)
+			.then((userCredentials) => {
+				const user = userCredentials.user;
+				console.log("Registered with:", user.email);
+			})
+			.catch((error) => alert(error.message));
+	};
+
 	const handleLogin = () => {
 		signInWithEmailAndPassword(auth, email, password)
 			.then((userCredentials) => {
@@ -52,94 +55,67 @@ const LoginScreen = () => {
 		<KeyboardAvoidingView style={styles.container} behavior="padding">
 			<View style={styles.inputContainer}>
 				<TextInput
-					style={styles.input}
 					placeholder="Email"
 					value={email}
 					onChangeText={(text) => setEmail(text)}
+					style={styles.input}
 				/>
-				<View style={styles.passwordContainer}>
-					<TextInput
-						style={styles.input}
-						placeholder="Password"
-						value={password}
-						onChangeText={(text) => setPassword(text)}
-						secureTextEntry={!showPassword}
-					/>
-					<TouchableOpacity
-						onPress={toggleShowPassword}
-						style={styles.iconContainer}
-					>
-						<MaterialIcons
-							name={
-								showPassword ? "visibility-off" : "visibility"
-							}
-							size={24}
-							color="#888"
-						/>
-					</TouchableOpacity>
-				</View>
+				<TextInput
+					placeholder="Password"
+					value={password}
+					onChangeText={(text) => setPassword(text)}
+					style={styles.input}
+					secureTextEntry
+				/>
 			</View>
 
 			<View style={styles.buttonContainer}>
-				<TouchableOpacity onPress={handleLogin} style={styles.button}>
-					<Text style={styles.buttonText}>Login</Text>
+				<TouchableOpacity
+					onPress={handleSignUp}
+					style={[styles.button, styles.buttonOutline]}
+				>
+					<Text style={styles.buttonOutlineText}>Register</Text>
 				</TouchableOpacity>
 			</View>
+
 			<View style={styles.buttonContainer}>
-				<Text onPress={() => navigation.replace("SignupScreen")}>
-					Don't have account? Registration!
+				<Text onPress={() => navigation.replace("Login")}>
+					Already have account? Login!
 				</Text>
 			</View>
 		</KeyboardAvoidingView>
 	);
 };
 
-export default LoginScreen;
+export default SignupScreen;
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#FFF",
 	},
 	inputContainer: {
 		width: "80%",
 	},
 	input: {
-		height: 40,
-		borderWidth: 1,
-		borderColor: "#888",
-		borderRadius: 8,
-		paddingHorizontal: 12,
-		marginBottom: 8,
-		backgroundColor: "lightgrey",
-		// backgroundColor: "white",
-		// paddingHorizontal: 15,
-		// paddingVertical: 10,
-		// borderRadius: 5,
-		// marginTop: 10,
-		// backgroundColor: "lightgrey",
-	},
-	passwordContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-		borderWidth: 1,
-		borderColor: "#888",
-		borderRadius: 8,
-		paddingHorizontal: 12,
+		backgroundColor: "white",
+		paddingHorizontal: 15,
+		paddingVertical: 10,
+		borderRadius: 10,
+		marginTop: 5,
 	},
 	buttonContainer: {
-		width: "80%",
+		width: "60%",
 		justifyContent: "center",
 		alignItems: "center",
-		marginTop: 20,
+		marginTop: 40,
 	},
 	button: {
-		backgroundColor: "#6200ED",
+		backgroundColor: "#0782F9",
 		width: "100%",
 		padding: 15,
-		borderRadius: 5,
+		borderRadius: 10,
 		alignItems: "center",
 	},
 	buttonOutline: {
@@ -151,9 +127,11 @@ const styles = StyleSheet.create({
 	buttonText: {
 		color: "white",
 		fontWeight: "700",
-		fontSize: 14,
+		fontSize: 16,
 	},
-	iconContainer: {
-		marginLeft: 8,
+	buttonOutlineText: {
+		color: "#0782F9",
+		fontWeight: "700",
+		fontSize: 16,
 	},
 });
