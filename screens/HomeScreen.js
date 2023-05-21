@@ -5,18 +5,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
 import { getFirestore } from "firebase/firestore";
-import { getDatabase, set, ref, get, child } from "firebase/database";
+import { getDatabase, set, ref, get, child, remove } from "firebase/database";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const database = ref(getDatabase());
-// set(ref(database, "Tasks/O6qKljPf7bbYt0OKpCNlfz4H1vx1"), {
-// 	todo: "123",
-// });
-// console.log(getFirestore);
-
 const auth = getAuth(app);
-
-const db = getFirestore(app);
+const db = getDatabase(app);
 
 // getCities();
 
@@ -24,6 +18,7 @@ const HomeScreen = () => {
 	const [todo, setTodo] = useState(""); // todo
 	const [todos, setTodos] = useState([]); // todos"O6qKljPf7bbYt0OKpCNlfz4H1vx1"
 	const navigation = useNavigation();
+	const userId = auth.currentUser.uid;
 
 	// const todoRef = collection(db, "Tasks");
 	//console.log(todoRef);
@@ -42,12 +37,30 @@ const HomeScreen = () => {
 		});
 	}, []);
 
+	const deleteTodo = (todoId) => {
+		console.log(userId);
+		console.log(todoId);
+		const todoRef = ref(db, `Tasks/${userId}/${todoId}`);
+		remove(todoRef)
+			.then(() => {
+				console.log("Todo deleted successfully.");
+				setTodos((prevTodos) => {
+					const updatedTodos = { ...prevTodos };
+					delete updatedTodos[todoId];
+					return updatedTodos;
+				});
+			})
+			.catch((error) => {
+				console.error("Error deleting todo:", error);
+			});
+	};
+
 	const handleEditTodo = (index) => {
 		// Handle edit logic here
 	};
 
-	const handleDeleteTodo = (index) => {
-		// Handle delete logic here
+	const handleDeleteTodo = (todoId) => {
+		deleteTodo(todoId);
 	};
 
 	const handleSignOut = () => {
@@ -70,9 +83,6 @@ const HomeScreen = () => {
 				<TouchableOpacity onPress={handleSignOut} style={styles.button}>
 					<Text style={styles.buttonText}>Sign out</Text>
 				</TouchableOpacity>
-			</View>
-			<View>
-				<Text>Email: {getAuth().currentUser?.email}</Text>
 			</View>
 			<View style={styles.container2}>
 				{Object.entries(todos).map(([key, value]) => (
@@ -116,9 +126,10 @@ const styles = StyleSheet.create({
 	},
 	buttonContainer: {
 		flexDirection: "row",
-		justifyContent: "space-around",
+		justifyContent: "space-between",
 		// justifyContent: "space-around",
 		alignItems: "center",
+		marginBottom: 50,
 	},
 	button: {
 		// backgroundColor: "#0782F9",
@@ -136,13 +147,6 @@ const styles = StyleSheet.create({
 		color: "white",
 		fontWeight: "700",
 		fontSize: 16,
-	},
-	container2: {
-		padding: 16,
-		backgroundColor: "#FFF",
-		borderRadius: 8,
-		marginBottom: 16,
-		elevation: 2,
 	},
 	todoContainer: {
 		flexDirection: "row",

@@ -50,6 +50,9 @@ const LoginScreen = () => {
 	};
 	return (
 		<KeyboardAvoidingView style={styles.container} behavior="padding">
+			<View>
+				<Text style={styles.mainText}>Authorization</Text>
+			</View>
 			<View style={styles.inputContainer}>
 				<TextInput
 					style={styles.input}
@@ -59,7 +62,7 @@ const LoginScreen = () => {
 				/>
 				<View style={styles.passwordContainer}>
 					<TextInput
-						style={styles.input}
+						style={styles.inputPassword}
 						placeholder="Password"
 						value={password}
 						onChangeText={(text) => setPassword(text)}
@@ -99,9 +102,13 @@ export default LoginScreen;
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#FFF",
+	},
+	mainText: {
+		fontSize: 44,
+		marginTop: 20,
+		marginBottom: 230,
 	},
 	inputContainer: {
 		width: "80%",
@@ -111,15 +118,10 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: "#888",
 		borderRadius: 8,
-		paddingHorizontal: 12,
+		paddingHorizontal: 18,
 		marginBottom: 8,
 		backgroundColor: "lightgrey",
-		// backgroundColor: "white",
-		// paddingHorizontal: 15,
-		// paddingVertical: 10,
-		// borderRadius: 5,
-		// marginTop: 10,
-		// backgroundColor: "lightgrey",
+		paddingVertical: 0,
 	},
 	passwordContainer: {
 		flexDirection: "row",
@@ -127,7 +129,14 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: "#888",
 		borderRadius: 8,
+		paddingHorizontal: 6,
+		backgroundColor: "lightgrey",
+	},
+	inputPassword: {
+		flex: 1,
+		height: 40,
 		paddingHorizontal: 12,
+		paddingVertical: 0, // Remove vertical padding
 	},
 	buttonContainer: {
 		width: "80%",
