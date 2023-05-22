@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: 40,
 		paddingHorizontal: 12,
-		paddingVertical: 0, // Remove vertical padding
+		paddingVertical: 0,
 	},
 	buttonContainer: {
 		width: "80%",

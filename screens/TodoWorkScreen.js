@@ -44,7 +44,6 @@ const TodoWorkScreen = () => {
 		set(todoRef, todo)
 			.then(() => {
 				console.log("Todo updated successfully.");
-				// navigation.goBack();
 			})
 			.catch((error) => {
 				console.error("Error updating todo:", error);

@@ -15,11 +15,12 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 const HomeScreen = () => {
-	const [todos, setTodos] = useState([]); // todos"O6qKljPf7bbYt0OKpCNlfz4H1vx1"
+	const [todos, setTodos] = useState([]);
 	const navigation = useNavigation();
 	const userId = auth.currentUser.uid;
 	const [location, setLocation] = useState(null);
 	const [address, setAddress] = useState(null);
+	const apiKey = "AIzaSyA5L8eQN-45j9APKtqY8hgDAdwa-WE4JWw";
 
 	useEffect(() => {
 		const userId = auth.currentUser.uid;
@@ -39,21 +40,18 @@ const HomeScreen = () => {
 			});
 
 		(async () => {
-			// Request permission to access location
 			let { status } = await Location.requestForegroundPermissionsAsync();
 			if (status !== "granted") {
 				console.log("Permission to access location was denied");
 				return;
 			}
 
-			// Get current device location
 			let location = await Location.getCurrentPositionAsync({});
 			setLocation(location);
 
-			// Reverse geocode the coordinates to get address
 			try {
 				let response = await axios.get(
-					`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.coords.latitude},${location.coords.longitude}&key=YOUR_API_KEY`
+					`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.coords.latitude},${location.coords.longitude}&key=${apiKey}`
 				);
 				if (response.data.results && response.data.results.length > 0) {
 					setAddress(response.data.results[0].formatted_address);
@@ -186,7 +184,7 @@ const styles = StyleSheet.create({
 	},
 	container2: {
 		flex: 1,
-		marginTop: 20, // Add a margin to separate from the previous content
+		marginTop: 20,
 	},
 
 	todoContainer: {
@@ -194,9 +192,9 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		marginBottom: 15,
-		backgroundColor: "#FFF", // Add a background color to avoid showing the underlying container's background
-		padding: 8, // Add padding to create some space around the todo item
-		borderRadius: 4, // Add border radius to round the corners
+		backgroundColor: "#FFF",
+		padding: 8,
+		borderRadius: 4,
 		elevation: 2,
 	},
 	todoText: {
