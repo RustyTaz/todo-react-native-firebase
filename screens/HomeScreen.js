@@ -6,16 +6,19 @@ import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
 import { getDatabase, ref, get, child, remove } from "firebase/database";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as Location from "expo-location";
+import axios from "axios";
 
 const database = ref(getDatabase());
 const auth = getAuth(app);
 const db = getDatabase(app);
 
 const HomeScreen = () => {
-	const [todo, setTodo] = useState(""); // todo
 	const [todos, setTodos] = useState([]); // todos"O6qKljPf7bbYt0OKpCNlfz4H1vx1"
 	const navigation = useNavigation();
 	const userId = auth.currentUser.uid;
+	const [location, setLocation] = useState(null);
+	const [address, setAddress] = useState(null);
 
 	useEffect(() => {
 		const userId = auth.currentUser.uid;
@@ -33,6 +36,34 @@ const HomeScreen = () => {
 			.catch((error) => {
 				console.error("Error fetching todos:", error);
 			});
+
+		(async () => {
+			// Request permission to access location
+			let { status } = await Location.requestForegroundPermissionsAsync();
+			if (status !== "granted") {
+				console.log("Permission to access location was denied");
+				return;
+			}
+
+			// Get current device location
+			let location = await Location.getCurrentPositionAsync({});
+			setLocation(location);
+
+			// Reverse geocode the coordinates to get address
+			try {
+				let response = await axios.get(
+					`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.coords.latitude},${location.coords.longitude}&key=YOUR_API_KEY`
+				);
+				if (response.data.results && response.data.results.length > 0) {
+					setAddress(response.data.results[0].formatted_address);
+				} else {
+					setAddress("Address not found");
+				}
+			} catch (error) {
+				console.error("Error retrieving address:", error);
+				setAddress("Error retrieving address");
+			}
+		})();
 	}, []);
 
 	const deleteTodo = (todoId) => {
@@ -86,6 +117,15 @@ const HomeScreen = () => {
 					<Text style={styles.buttonText}>Sign out</Text>
 				</TouchableOpacity>
 			</View>
+			<View>
+				{location && (
+					<Text>
+						Latitude: {location.coords.latitude.toFixed(6)},
+						Longitude: {location.coords.longitude.toFixed(6)}
+					</Text>
+				)}
+				{address && <Text>Address: {address}</Text>}
+			</View>
 			<View style={styles.container2}>
 				{Object.entries(todos).map(([key, value]) => (
 					<View key={key} style={styles.todoContainer}>
@@ -128,7 +168,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		marginBottom: 50,
+		marginBottom: 30,
 	},
 	button: {
 		padding: 8,

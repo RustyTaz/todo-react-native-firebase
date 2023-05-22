@@ -5,13 +5,13 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
+	SafeAreaView,
 } from "react-native";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import app from "../firebase";
-import { getDatabase, set, ref, get, child, update } from "firebase/database";
+import { getDatabase, set, ref, update } from "firebase/database";
 import { useNavigation, useRoute } from "@react-navigation/core";
 
-const database = ref(getDatabase());
 const auth = getAuth(app);
 
 const TodoWorkScreen = () => {
@@ -31,9 +31,7 @@ const TodoWorkScreen = () => {
 		const db = getDatabase();
 		const userId = auth.currentUser.uid;
 		const date = new Date().getTime();
-		update(ref(db, `Tasks/` + userId), {
-			[date]: todo,
-		});
+		update(ref(db, `Tasks/${userId}`), { [date]: todo });
 		setTodo("");
 	}
 
@@ -44,7 +42,7 @@ const TodoWorkScreen = () => {
 		set(todoRef, todo)
 			.then(() => {
 				console.log("Todo updated successfully.");
-				//navigation.goBack();
+				// navigation.goBack();
 			})
 			.catch((error) => {
 				console.error("Error updating todo:", error);
@@ -52,35 +50,35 @@ const TodoWorkScreen = () => {
 	}
 
 	return (
-		<View style={styles.container}>
-			<View>
-				<Text style={styles.mainText}>
-					{editMode ? "Edit todo" : "Create todo"}
-				</Text>
-			</View>
+		<SafeAreaView style={styles.container}>
 			<TouchableOpacity
-				style={styles.button}
+				style={styles.backButton}
 				onPress={() => navigation.replace("HomeScreen")}
 			>
 				<Text style={styles.buttonText}>GO BACK</Text>
 			</TouchableOpacity>
-			<View style={styles.inputContainer}>
-				<TextInput
-					placeholder="Add new todo..."
-					style={styles.input}
-					value={todo}
-					onChangeText={(text) => setTodo(text)}
-				/>
-				<TouchableOpacity
-					style={styles.button}
-					onPress={editMode ? editTodo : addTodo}
-				>
-					<Text style={styles.buttonText}>
-						{editMode ? "SAVE" : "ADD"}
-					</Text>
-				</TouchableOpacity>
+			<View style={styles.contentContainer}>
+				<Text style={styles.mainText}>
+					{editMode ? "Edit todo" : "Create todo"}
+				</Text>
+				<View style={styles.inputContainer}>
+					<TextInput
+						placeholder="Add new todo..."
+						style={styles.input}
+						value={todo}
+						onChangeText={(text) => setTodo(text)}
+					/>
+					<TouchableOpacity
+						style={styles.button}
+						onPress={editMode ? editTodo : addTodo}
+					>
+						<Text style={styles.buttonText}>
+							{editMode ? "SAVE" : "ADD"}
+						</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
-		</View>
+		</SafeAreaView>
 	);
 };
 
@@ -88,34 +86,58 @@ export default TodoWorkScreen;
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		backgroundColor: "#fff",
+	},
+	backButton: {
+		position: "absolute",
+		top: 10,
+		left: 10,
+		zIndex: 1,
+		paddingHorizontal: 10,
+		paddingVertical: 5,
+		borderRadius: 4,
+		backgroundColor: "#663399",
+	},
+	buttonText: {
+		color: "white",
+		fontWeight: "700",
+		fontSize: 16,
+	},
+	contentContainer: {
+		flex: 1,
+		justifyContent: "flex-start",
 		alignItems: "center",
+		paddingHorizontal: 20,
+		marginTop: 50,
 	},
 	mainText: {
 		fontSize: 34,
-		marginTop: 20,
-		marginBottom: 50,
+		textAlign: "center",
 	},
 	inputContainer: {
-		width: "80%",
+		width: "100%",
 	},
 	input: {
 		backgroundColor: "white",
-		paddingHorizontal: 15,
+		paddingHorizontal: 10,
 		paddingVertical: 10,
-		borderRadius: 10,
+		borderRadius: 4,
 		marginTop: 20,
+		backgroundColor: "lightgrey",
 	},
 	button: {
-		backgroundColor: "#6200ED",
-		width: "60%",
-		padding: 15,
-		borderRadius: 10,
+		alignSelf: "center",
+		backgroundColor: "#663399",
+		width: "40%",
+		padding: 10,
+		borderRadius: 4,
 		alignItems: "center",
 		marginTop: 20,
 	},
 	buttonText: {
 		color: "white",
 		fontWeight: "700",
-		fontSize: 16,
+		fontSize: 14,
 	},
 });
