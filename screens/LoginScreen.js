@@ -17,6 +17,7 @@ import {
 import app from "../firebase";
 import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import Localization from "../localization/Localization";
 
 const auth = getAuth(app);
 const LoginScreen = () => {
@@ -51,19 +52,21 @@ const LoginScreen = () => {
 	return (
 		<KeyboardAvoidingView style={styles.container} behavior="padding">
 			<View>
-				<Text style={styles.mainText}>Authorization</Text>
+				<Text style={styles.mainText}>
+					{Localization.authorization}
+				</Text>
 			</View>
 			<View style={styles.inputContainer}>
 				<TextInput
 					style={styles.input}
-					placeholder="Email"
+					placeholder={Localization.enter_email}
 					value={email}
 					onChangeText={(text) => setEmail(text)}
 				/>
 				<View style={styles.passwordContainer}>
 					<TextInput
 						style={styles.inputPassword}
-						placeholder="Password"
+						placeholder={Localization.enter_password}
 						value={password}
 						onChangeText={(text) => setPassword(text)}
 						secureTextEntry={!showPassword}
@@ -85,12 +88,12 @@ const LoginScreen = () => {
 
 			<View style={styles.buttonContainer}>
 				<TouchableOpacity onPress={handleLogin} style={styles.button}>
-					<Text style={styles.buttonText}>Login</Text>
+					<Text style={styles.buttonText}>{Localization.login}</Text>
 				</TouchableOpacity>
 			</View>
 			<View style={styles.buttonContainer}>
 				<Text onPress={() => navigation.replace("SignupScreen")}>
-					Don't have account? Registration!
+					{Localization.goToSignup}
 				</Text>
 			</View>
 		</KeyboardAvoidingView>
@@ -145,7 +148,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	button: {
-		backgroundColor: "#6200ED",
+		backgroundColor: "#663399",
 		width: "100%",
 		padding: 15,
 		borderRadius: 5,

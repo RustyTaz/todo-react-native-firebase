@@ -16,6 +16,7 @@ import {
 import app from "../firebase";
 import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import Localization from "../localization/Localization";
 
 const auth = getAuth(app);
 
@@ -57,11 +58,11 @@ const SignupScreen = () => {
 	return (
 		<KeyboardAvoidingView style={styles.container} behavior="padding">
 			<View>
-				<Text style={styles.mainText}>Registration</Text>
+				<Text style={styles.mainText}>{Localization.signup}</Text>
 			</View>
 			<View style={styles.inputContainer}>
 				<TextInput
-					placeholder="Email"
+					placeholder={Localization.enter_email}
 					value={email}
 					onChangeText={(text) => setEmail(text)}
 					style={styles.input}
@@ -69,7 +70,7 @@ const SignupScreen = () => {
 				<View style={styles.passwordContainer}>
 					<TextInput
 						style={styles.inputPassword}
-						placeholder="Password"
+						placeholder={Localization.enter_password}
 						value={password}
 						onChangeText={(text) => setPassword(text)}
 						secureTextEntry={!showPassword}
@@ -90,7 +91,7 @@ const SignupScreen = () => {
 				<View style={styles.passwordContainer}>
 					<TextInput
 						style={styles.inputPassword}
-						placeholder="Confirm password"
+						placeholder={Localization.enter_password_confirm}
 						value={confirmPassword}
 						onChangeText={(text) => setConfirmPassword(text)}
 						secureTextEntry={!showPassword}
@@ -115,13 +116,13 @@ const SignupScreen = () => {
 					onPress={handleSignUp}
 					style={[styles.button]}
 				>
-					<Text style={styles.buttonText}>Register</Text>
+					<Text style={styles.buttonText}>{Localization.signup}</Text>
 				</TouchableOpacity>
 			</View>
 
 			<View style={styles.buttonContainer}>
 				<Text onPress={() => navigation.replace("Login")}>
-					Already have account? Login!
+					{Localization.goToLogin}
 				</Text>
 			</View>
 		</KeyboardAvoidingView>
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	button: {
-		backgroundColor: "#6200ED",
+		backgroundColor: "#663399",
 		width: "100%",
 		padding: 15,
 		borderRadius: 5,

@@ -1,0 +1,19 @@
+{
+    "app_name": "Мои задачи",
+    "enter_email": "Введите почту",
+    "enter_password": "Введите пароль",
+    "enter_password_confirm": "Повторите пароль",
+    "create_account": "Create account",
+    "login": "Войти",
+    "signout": "Выйти",
+    "signup": "Регистрация",
+    "authorization": "Авторизация",
+    "goToSignup": "Нету аккаутна? Зарегестрируйтесь!",
+    "goToLogin": "Есть аккаунт? Войдите!",
+    "edit_todo": "Редактировать задачу",
+    "create_task": "Создать задачу",
+    "todo_input_placeholder": "Добавьте задачу...",
+    "add_todo_btn": "Добавить",
+    "back_btn": "Назад",
+    "save_btn": "Сохранить"
+}

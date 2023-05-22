@@ -1,0 +1,19 @@
+{
+    "app_name": "My tasks",
+    "enter_email": "Enter email",
+    "enter_password": "Enter password",
+    "enter_password_confirm": "Enter password confirm",
+    "create_account": "Create account",
+    "login": "Login",
+    "signout": "Sign out",
+    "signup": "Registration",
+    "authorization": "Authorization",
+    "goToSignup": "Don't have account? Registration!",
+    "goToLogin": "Already have account? Login!",
+    "create_task": "Create todo",
+    "edit_todo": "Edit todo",
+    "add_todo_btn": "Add todo",
+    "todo_input_placeholder": "Add new todo...",
+    "back_btn": "Go back",
+    "save_btn": "Save"
+}

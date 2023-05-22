@@ -11,6 +11,7 @@ import { getAuth } from "firebase/auth";
 import app from "../firebase";
 import { getDatabase, set, ref, update } from "firebase/database";
 import { useNavigation, useRoute } from "@react-navigation/core";
+import Localization from "../localization/Localization";
 
 const auth = getAuth(app);
 
@@ -20,6 +21,7 @@ const TodoWorkScreen = () => {
 	const route = useRoute();
 	const { editMode } = route.params || false;
 	const { todoId, todoValue } = route.params || {};
+	console.log(editMode);
 
 	useEffect(() => {
 		if (editMode && todoValue) {
@@ -55,15 +57,17 @@ const TodoWorkScreen = () => {
 				style={styles.backButton}
 				onPress={() => navigation.replace("HomeScreen")}
 			>
-				<Text style={styles.buttonText}>GO BACK</Text>
+				<Text style={styles.buttonText}>{Localization.back_btn}</Text>
 			</TouchableOpacity>
 			<View style={styles.contentContainer}>
 				<Text style={styles.mainText}>
-					{editMode ? "Edit todo" : "Create todo"}
+					{editMode
+						? Localization.edit_todo
+						: Localization.create_task}
 				</Text>
 				<View style={styles.inputContainer}>
 					<TextInput
-						placeholder="Add new todo..."
+						placeholder={Localization.todo_input_placeholder}
 						style={styles.input}
 						value={todo}
 						onChangeText={(text) => setTodo(text)}
@@ -73,7 +77,9 @@ const TodoWorkScreen = () => {
 						onPress={editMode ? editTodo : addTodo}
 					>
 						<Text style={styles.buttonText}>
-							{editMode ? "SAVE" : "ADD"}
+							{editMode
+								? Localization.save_btn
+								: Localization.add_todo_btn}
 						</Text>
 					</TouchableOpacity>
 				</View>

@@ -8,6 +8,7 @@ import { getDatabase, ref, get, child, remove } from "firebase/database";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import axios from "axios";
+import Localization from "../localization/Localization";
 
 const database = ref(getDatabase());
 const auth = getAuth(app);
@@ -111,10 +112,14 @@ const HomeScreen = () => {
 					onPress={() => navigation.navigate("TodoWorkScreen")}
 					style={styles.button}
 				>
-					<Text style={styles.buttonText}>Add todo</Text>
+					<Text style={styles.buttonText}>
+						{Localization.add_todo_btn}
+					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity onPress={handleSignOut} style={styles.button}>
-					<Text style={styles.buttonText}>Sign out</Text>
+					<Text style={styles.buttonText}>
+						{Localization.signout}
+					</Text>
 				</TouchableOpacity>
 			</View>
 			<View>
@@ -149,7 +154,6 @@ const HomeScreen = () => {
 					</View>
 				))}
 			</View>
-			<View style={styles.buttonContainer}></View>
 		</View>
 	);
 };
@@ -180,10 +184,20 @@ const styles = StyleSheet.create({
 		fontWeight: "700",
 		fontSize: 16,
 	},
+	container2: {
+		flex: 1,
+		marginTop: 20, // Add a margin to separate from the previous content
+	},
+
 	todoContainer: {
+		flex: 1,
 		flexDirection: "row",
 		alignItems: "center",
 		marginBottom: 15,
+		backgroundColor: "#FFF", // Add a background color to avoid showing the underlying container's background
+		padding: 8, // Add padding to create some space around the todo item
+		borderRadius: 4, // Add border radius to round the corners
+		elevation: 2,
 	},
 	todoText: {
 		flex: 1,
