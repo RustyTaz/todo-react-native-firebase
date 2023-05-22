@@ -23,6 +23,7 @@ export default function App() {
 					headerStyle: {
 						backgroundColor: "#663399",
 					},
+					headerLeft: null,
 				}}
 			>
 				<Stack.Screen
