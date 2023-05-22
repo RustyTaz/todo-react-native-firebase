@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -5,11 +6,10 @@ import {
 	TextInput,
 	TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
 import { getDatabase, set, ref, get, child, update } from "firebase/database";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/core";
 
 const database = ref(getDatabase());
 const auth = getAuth(app);
@@ -17,8 +17,17 @@ const auth = getAuth(app);
 const TodoWorkScreen = () => {
 	const [todo, setTodo] = useState("");
 	const navigation = useNavigation();
+	const route = useRoute();
+	const { editMode } = route.params || false;
+	const { todoId, todoValue } = route.params || {};
 
-	function addTodo(todo) {
+	useEffect(() => {
+		if (editMode && todoValue) {
+			setTodo(todoValue);
+		}
+	}, [editMode, todoValue]);
+
+	function addTodo() {
 		const db = getDatabase();
 		const userId = auth.currentUser.uid;
 		const date = new Date().getTime();
@@ -28,8 +37,27 @@ const TodoWorkScreen = () => {
 		setTodo("");
 	}
 
+	function editTodo() {
+		const db = getDatabase();
+		const userId = auth.currentUser.uid;
+		const todoRef = ref(db, `Tasks/${userId}/${todoId}`);
+		set(todoRef, todo)
+			.then(() => {
+				console.log("Todo updated successfully.");
+				//navigation.goBack();
+			})
+			.catch((error) => {
+				console.error("Error updating todo:", error);
+			});
+	}
+
 	return (
 		<View style={styles.container}>
+			<View>
+				<Text style={styles.mainText}>
+					{editMode ? "Edit todo" : "Create todo"}
+				</Text>
+			</View>
 			<TouchableOpacity
 				style={styles.button}
 				onPress={() => navigation.replace("HomeScreen")}
@@ -40,13 +68,16 @@ const TodoWorkScreen = () => {
 				<TextInput
 					placeholder="Add new todo..."
 					style={styles.input}
+					value={todo}
 					onChangeText={(text) => setTodo(text)}
 				/>
 				<TouchableOpacity
 					style={styles.button}
-					onPress={() => addTodo(todo)}
+					onPress={editMode ? editTodo : addTodo}
 				>
-					<Text style={styles.buttonText}>ADD</Text>
+					<Text style={styles.buttonText}>
+						{editMode ? "SAVE" : "ADD"}
+					</Text>
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -59,6 +90,11 @@ const styles = StyleSheet.create({
 	container: {
 		alignItems: "center",
 	},
+	mainText: {
+		fontSize: 34,
+		marginTop: 20,
+		marginBottom: 50,
+	},
 	inputContainer: {
 		width: "80%",
 	},
@@ -69,7 +105,6 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		marginTop: 20,
 	},
-
 	button: {
 		backgroundColor: "#6200ED",
 		width: "60%",

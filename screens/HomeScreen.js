@@ -4,15 +4,12 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getAuth, signOut } from "firebase/auth";
 import app from "../firebase";
-import { getFirestore } from "firebase/firestore";
-import { getDatabase, set, ref, get, child, remove } from "firebase/database";
+import { getDatabase, ref, get, child, remove } from "firebase/database";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const database = ref(getDatabase());
 const auth = getAuth(app);
 const db = getDatabase(app);
-
-// getCities();
 
 const HomeScreen = () => {
 	const [todo, setTodo] = useState(""); // todo
@@ -20,21 +17,22 @@ const HomeScreen = () => {
 	const navigation = useNavigation();
 	const userId = auth.currentUser.uid;
 
-	// const todoRef = collection(db, "Tasks");
-	//console.log(todoRef);
-
 	useEffect(() => {
 		const userId = auth.currentUser.uid;
 		let array = [];
-		get(child(database, `Tasks/${userId}`)).then((snapshot) => {
-			if (snapshot.exists()) {
-				array = snapshot.val();
-				setTodos(snapshot.val());
-				console.log(array);
-			} else {
-				console.log("No data available");
-			}
-		});
+		get(child(database, `Tasks/${userId}`))
+			.then((snapshot) => {
+				if (snapshot.exists()) {
+					array = snapshot.val();
+					setTodos(snapshot.val());
+					console.log(array);
+				} else {
+					console.log("No data available");
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching todos:", error);
+			});
 	}, []);
 
 	const deleteTodo = (todoId) => {
@@ -55,8 +53,12 @@ const HomeScreen = () => {
 			});
 	};
 
-	const handleEditTodo = (index) => {
-		// Handle edit logic here
+	const handleEditTodo = (todoId) => {
+		navigation.navigate("TodoWorkScreen", {
+			editMode: true,
+			todoId: todoId,
+			todoValue: todos[todoId],
+		});
 	};
 
 	const handleDeleteTodo = (todoId) => {
@@ -75,7 +77,7 @@ const HomeScreen = () => {
 		<View style={styles.container}>
 			<View style={styles.buttonContainer}>
 				<TouchableOpacity
-					onPress={() => navigation.replace("TodoWorkScreen")}
+					onPress={() => navigation.navigate("TodoWorkScreen")}
 					style={styles.button}
 				>
 					<Text style={styles.buttonText}>Add todo</Text>
@@ -116,8 +118,6 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
 	container: {
-		// flex: 1,
-		// alignItems: "center",
 		padding: 16,
 		backgroundColor: "#FFF",
 		borderRadius: 8,
@@ -127,22 +127,14 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		// justifyContent: "space-around",
 		alignItems: "center",
 		marginBottom: 50,
 	},
 	button: {
-		// backgroundColor: "#0782F9",
-		// width: "60%",
-		// padding: 15,
-		// borderRadius: 10,
-		// alignItems: "center",
-		// marginTop: 40,
 		padding: 8,
 		backgroundColor: "#663399",
 		borderRadius: 4,
 	},
-
 	buttonText: {
 		color: "white",
 		fontWeight: "700",
